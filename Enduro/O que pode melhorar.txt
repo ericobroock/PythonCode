@@ -1,0 +1,10 @@
+A função de ler e de escrever o recorde pode ser especificada para rodar apenas uma vez, e não a cada frame.
+Acho que dá pra usar a mesma ideia do som de batida.
+
+Colocar uma mensagem de novo recorde quando o jogo finaliza com novo recorde.
+
+Colocar um som, tipo duas notas, quando uma quantidade x de pontos é alcançada. Tipo a cada 1000 pontos.
+
+No editor do pyxel, deixar apenas o desenhos e sons que são utilizados.
+
+Colocar um comando de pause.
