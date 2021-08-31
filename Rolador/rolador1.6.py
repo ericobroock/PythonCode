@@ -11,6 +11,9 @@ import os
 import base64
 from d20icon import icon
 
+# Ocultando o cmd
+#import ctypes
+#ctypes.windll.kernel32.FreeConsole()
 
 class rolador:
 
@@ -129,8 +132,8 @@ class rolador:
             rolagem = randint(1, dado)
             resultado.append(rolagem)
             
-        print('-> '+str(qt)+' Dado d'+str(dado), end=': ')
-        print(*resultado, sep=' + ', end='\n')
+        #print('-> '+str(qt)+' Dado d'+str(dado), end=': ')
+        #print(*resultado, sep=' + ', end='\n')
         #self.y = StringVar()
         soma = 0
         for i in range(len(resultado)):
@@ -147,9 +150,9 @@ class rolador:
         else:
             self.z = self.y + (' = '+str(soma))
         
-        print('teste x ',self.x)
-        print('teste y ',self.y)
-        print(self.z)
+        #print('teste x ',self.x)
+        #print('teste y ',self.y)
+        #print(self.z)
         self.label = Label(res, text=self.z, wraplength=260)
         self.label.grid(column=1, row=1, sticky=(W,E))
         
