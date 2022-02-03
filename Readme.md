@@ -4,7 +4,7 @@ Nas pastas estão os códigos dos respectivos projetos.
 
 ### Enduro
 
-Jogo simples feito com pyxel.
+Jogo simples feito com pyxel. Bem parecido com aqueles minigames de corrida.
 
 ### Rolador
 
