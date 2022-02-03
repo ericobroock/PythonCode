@@ -1,5 +1,6 @@
 # Códigos Python 
 
+Repositório idealizado como portfólio.
 Nas pastas estão os códigos dos respectivos projetos.
 
 ### Enduro
