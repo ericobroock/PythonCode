@@ -15,29 +15,24 @@ from d20icon import icon
 #import ctypes
 #ctypes.windll.kernel32.FreeConsole()
 
-class rolador:
+class ficha:
 
     def __init__(self, root):
         '''Contrutor'''
-        root.title("Rolador de dados")
-        #root.geometry("600x150")
+        root.title("Ficha de personagem")
+        root.geometry("300x600")
         #root.iconbitmap(tempFile)
-        mainframe = ttk.Frame(root, padding="10 10 10 10")
-        mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
-        root.columnconfigure(0, weight=1)
-        root.rowconfigure(0, weight=1)
-        mainframe.columnconfigure(2, weight=3)
-        mainframe.rowconfigure(2, weight=3)
         #self.y = StringVar()
         #self.x = StringVar()
-        self.saidas(mainframe)
-        self.buttons(mainframe, self.res)
-        self.entradas(mainframe)
+        #self.saidas(root)
+        #self.buttons(root, self.res)
+        #self.entradas(root)
         self.menus()
+        self.atributos(root)
 
         # Construtor do relógio
-        self.clock = ttk.Label(mainframe)
-        self.clock.grid(column=6, row=1, columnspan=3, sticky=(E))
+        self.clock = ttk.Label(root)
+        self.clock.place(x=20, y=20)
         self.tick()
         
         #pass
@@ -74,6 +69,14 @@ class rolador:
         ok = ttk.Button(root,text='OK',command=OK)
         ok.place(x=40,y=50)
         root.resizable(width=False, height=False)
+        
+    def atributos(self, root):
+        '''Entradas e saídas de atributos'''
+        strenght = ttk.Label(root, text='FORÇA')
+        strenght.place(x=20, y=40)
+        self.entrada_str = StringVar()
+        streght_dados = ttk.Entry(root, width=2, textvariable=self.entrada_str)
+        streght_dados.place(x=65, y=40)
         
     def buttons(self, mainframe, res):
         '''Todos os botões do programa'''
@@ -210,7 +213,7 @@ iconfile.close()
         
 root = Tk()
 root.wm_iconbitmap(default=tempFile)
-rolador(root)
+ficha(root)
 #Bloqueia o tamanho da tela
 root.resizable(width=False, height=False)
 # Delete the tempfile
