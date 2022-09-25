@@ -17,6 +17,7 @@ dice_can=[dado_vermelho, dado_vermelho, dado_vermelho,
 point=0
 death=3
 reroll_dice=[]
+
 begin=input('Digite s para rodar os dados')
 if begin == 's':
     for i in range(3):
@@ -44,8 +45,22 @@ if segunda_rodada == 's':
         roll = randint(1,len(dice_can)-1)
         reroll_dice.append(dice_can[roll])
         dice_can.pop(roll)
+    for i in reroll_dice:
+        face_rand = random.choice(dice_can[roll])
+        print(face_rand)
+        if face_rand == 'brain':
+            point += 1
+        elif face_rand == 'shot':
+            death -= 1
+        else:
+            print(dice_can[roll])
+            continue
+        reroll_dice.pop(roll)
     print(reroll_dice)
     print(len(reroll_dice))
     print(dice_can)
+
+#if "__name__" == "__main__":
+    
 
                
