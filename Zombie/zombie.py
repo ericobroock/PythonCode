@@ -18,58 +18,48 @@ point=0
 death=3
 roll_dice=[]
 
-##begin=input('Digite s para rodar os dados')
-##if begin == 's':
-##    for i in range(3):
-##        roll = randint(1,len(dice_can)-1)
-##        face_rand = random.choice(dice_can[roll])
-##        print(face_rand)
-##        if face_rand == 'brain':
-##            point += 1
-##        elif face_rand == 'shot':
-##            death -= 1
-##        else:
-##            print(dice_can[roll])
-##            roll_dice.append(dice_can[roll])
-##        dice_can.pop(roll)
-##        print(roll)
-##    print (dice_can)
-##    print (len(dice_can))
-##    print('Tem tantos pontos ', point)
-##    print('Tem de vida ', death)
-##    print(roll_dice)
-##    print(len(roll_dice))
-#segunda_rodada=input("Digite s para rerolar os dados")
 def Rodadas():
     global point, death
+    # Pega 3 dados da lata.
     while len(roll_dice) <= 2:
-        roll = randint(1,len(dice_can)-1)
+        roll = randint(0,len(dice_can)-1)
+        print('Pega o dado número ', roll)
         roll_dice.append(dice_can[roll])
-        print('roll_dice tem ', len(roll_dice), 'dados')
-        print(roll_dice)
+        print(dice_can[roll])
         dice_can.pop(roll)
+    print('A mão possui', len(roll_dice), 'dados')
+    print(roll_dice)
+    out_dice=[]
+    giro = 1
+    # Roda os 3 dados
     for i in roll_dice:
-        i=0
-        face_rand = random.choice(roll_dice[i])
-        print(face_rand)
+        print(str(giro) + 'º dado jogado')
+        giro += 1
+        face_rand = random.choice(i)
+        print('A rolagem do dado foi', face_rand)
         if face_rand == 'brain':
             point += 1
+            out_dice.append(i)
         elif face_rand == 'shot':
             death -= 1
+            out_dice.append(i)
         else:
             continue
-        roll_dice.pop()
-        i += 1
-    print(roll_dice)
-    print(len(roll_dice))
-    print('dice_can tem ', len(dice_can), 'dados')
-    print('Tem tantos pontos ', point)
-    print('Tem de vida ', death)
+    # Verifica se os dados foram contabilizados, brain ou shot,
+    # e remove da mão.
+    for i in out_dice:
+        roll_dice.remove(i)
+    print('Dados que saem da jogada ', out_dice)
+    print('Dados remanescentes na mão, ' + str(len(roll_dice))+': ', roll_dice)
+    print('\nA lata ainda tem ', len(dice_can), 'dados')
+    print('Você já tem ', point, 'pontos!')
+    print('Vida restante: ', death)
 
 if __name__ == '__main__':
+    print("Bem vindo ao ZOMBIE DICE!!!\n")
     while True:
         if death > 0:
-            begin=input('Digite sim para rodar os dados')
+            begin=input('Digite sim para rodar os dados: ')
             if begin == 'sim':
                 Rodadas()
         else:
