@@ -18,3 +18,7 @@ A versão 1.6 precisa do arquivo d20icon.py, que é onde o ícone d20.ico está 
 ### QrCode
 
 Gerador de qrcode utilizando Tkinter.
+
+### Backup Automated
+
+Não é automatizado, mas é um axiliador de backup recorrente para pastas de trabalho. Verifica arquivos que foram alterados e adicionados, com o objetivo de otimizar o uso de rede durante a cópia. Não efetua cópias de arquivos iguais, sem alteração.
