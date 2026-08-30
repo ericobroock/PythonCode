@@ -49,9 +49,6 @@ class RobocopyRunner:
             # Não exibe cabeçalho
             "/NJH",
 
-            # Não exibe resumo final
-            "/NJS",
-
             # Não exibe progresso por arquivo
             "/NP",
         ]

@@ -39,16 +39,31 @@ class Logger:
         self.write("Backup iniciado.")
 
     def write(self, message):
-        """Grava uma mensagem no log."""
+        """
+        Grava uma mensagem no arquivo de log.
+
+        Linhas vazias não são gravadas.
+        """
+
+        if not message:
+            return
+
+        message = str(message).strip()
+
+        if not message:
+            return
 
         if self.log_file is None:
-            self.start()
+            self._create_log_file()
 
-        timestamp = datetime.now().strftime("%H:%M:%S")
+        timestamp = datetime.now().strftime(
+            "%H:%M:%S"
+        )
 
         line = f"[{timestamp}] {message}"
 
         try:
+
             with open(
                 self.log_file,
                 "a",
@@ -59,6 +74,15 @@ class Logger:
 
         except OSError:
             pass
+
+    def _create_log_file(self):
+        """Cria o arquivo de log sem registrar mensagem."""
+
+        filename = datetime.now().strftime(
+            "%Y-%m-%d_%H-%M-%S.log"
+        )
+
+        self.log_file = self.log_directory / filename
 
     def finish(self):
         """Registra o encerramento."""

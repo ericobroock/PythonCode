@@ -44,6 +44,7 @@ class MainWindow(tk.Tk):
 
         self.total_files = 0
         self.processed_files = 0
+        self.copied_files = 0
 
         self.create_menu()
         self.create_widgets()
@@ -533,6 +534,7 @@ class MainWindow(tk.Tk):
 
         self.processed_files = 0
         self.total_files = 0
+        self.copied_files = 0
 
         self.backup_running = True
 
@@ -579,6 +581,23 @@ class MainWindow(tk.Tk):
 
             self.logger.start()
 
+            self.logger.write(
+                f"Origem: {source}"
+            )
+
+            self.logger.write(
+                f"Destino: {destination}"
+            )
+
+            self.logger.write(
+                "Extensões ignoradas: "
+                + (
+                    ", ".join(excluded)
+                    if excluded
+                    else "nenhuma"
+                )
+)
+
             # -------------------------------------------------
             # Análise
             # -------------------------------------------------
@@ -607,10 +626,22 @@ class MainWindow(tk.Tk):
                 eligible_files
             )
 
+            self.logger.write(
+                f"Arquivos elegíveis para cópia: {self.total_files}"
+            )
+
             self.after(
                 0,
                 self.analysis_finished,
                 self.total_files
+            )
+
+            # self.logger.write(
+            #     f"Arquivos elegíveis encontrados: {self.total_files}"
+            # )
+
+            self.logger.write(
+                "Backup em execução."
             )
 
             # -------------------------------------------------
@@ -674,10 +705,18 @@ class MainWindow(tk.Tk):
     # =====================================================
 
     def robocopy_output(self, line):
+        """
+        Recebe a saída do ROBOCOPY.
 
-        self.logger.write(line)
+        A saída original é enviada para a interface.
+        O log recebe apenas linhas úteis.
+        """
 
-        # Toda saída do ROBOCOPY chega pela thread.
+        line = line.strip()
+
+        if not line:
+            return
+
         self.after(
             0,
             self.process_robocopy_line,
@@ -691,12 +730,52 @@ class MainWindow(tk.Tk):
         if not line:
             return
 
-        # Mensagens que indicam arquivos
-        # normalmente possuem extensão.
+        # -------------------------------------------------
+        # Resumo do ROBOCOPY
+        # -------------------------------------------------
+
+        if line.startswith("Files"):
+
+            parts = line.split()
+
+            try:
+                self.copied_files = int(parts[2])
+
+            except (IndexError, ValueError):
+                pass
+
+            # Não exibe o resumo técnico na tela
+            return
+
+        # -------------------------------------------------
+        # Outras linhas do resumo
+        # -------------------------------------------------
+
+        if (
+            line.startswith("Dirs")
+            or line.startswith("Bytes")
+            or line.startswith("Times")
+            or line.startswith("Ended")
+            or line.startswith("Diretórios")
+            or line.startswith("Arquivos")
+            or line.startswith("Bytes")
+            or line.startswith("N.º de Vezes")
+            or line.startswith("Finalizado em")
+            or line.startswith("Total")
+            or line.startswith("=")
+        ):
+            return
+
+        # -------------------------------------------------
+        # Linhas de arquivos
+        # -------------------------------------------------
+
         looks_like_file = (
             "." in line
             and not line.startswith("ROBOCOPY")
-            and not line.startswith("-------------------------------------------------------------------------------")
+            and not line.startswith(
+                "-------------------------------------------------------------------------------"
+            )
         )
 
         if looks_like_file:
@@ -726,9 +805,15 @@ class MainWindow(tk.Tk):
                     )
                 )
 
+            # Exibe na tela
             self.add_log(
                 line,
                 "success"
+            )
+
+            # Grava no arquivo
+            self.logger.write(
+                f"Arquivo processado: {line}"
             )
 
         else:
@@ -752,6 +837,15 @@ class MainWindow(tk.Tk):
 
         self.cancel_button.config(
             state="disabled"
+        )
+
+        self.logger.write(
+            f"Arquivos copiados: {self.copied_files}"
+        )
+
+        self.add_log(
+            f"Arquivos copiados: {self.copied_files}",
+            "success"
         )
 
         self.logger.finish()
