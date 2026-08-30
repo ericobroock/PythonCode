@@ -1,0 +1,10 @@
+{
+    "source_folder": "C:/Users/Erico/Documents/Comandos e ambiente",
+    "backup_folder": "C:/Users/Erico/OneDrive/Documentos",
+    "excluded_extensions": [
+        ".dwg",
+        ".dxf",
+        ".ifc",
+        ".rvt"
+    ]
+}

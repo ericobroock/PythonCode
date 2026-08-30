@@ -1,0 +1,10 @@
+{
+    "source_folder": "",
+    "backup_folder": "",
+    "excluded_extensions": [
+        ".dwg",
+        ".dxf",
+        ".ifc",
+        ".rvt"
+    ]
+}
