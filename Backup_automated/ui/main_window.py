@@ -74,6 +74,13 @@ class MainWindow(tk.Tk):
         )
 
         menu_file.add_command(
+            label="Abrir pasta de logs",
+            command=self.open_log_folder
+        )
+
+        menu_file.add_separator()
+
+        menu_file.add_command(
             label="Sair",
             command=self.on_close
         )
@@ -379,6 +386,35 @@ class MainWindow(tk.Tk):
     # CONFIGURAÇÃO
     # =====================================================
 
+    def open_log_folder(self):
+        """Abre a pasta de logs no Windows."""
+
+        log_directory = (
+            self.logger.get_log_directory()
+        )
+
+        try:
+
+            log_directory.mkdir(
+                parents=True,
+                exist_ok=True
+            )
+
+            os.startfile(
+                log_directory
+            )
+
+        except OSError as error:
+
+            messagebox.showerror(
+                "Erro",
+                (
+                    "Não foi possível abrir a pasta de logs.\n\n"
+                    f"{error}"
+                ),
+                parent=self
+            )
+
     def load_configuration(self):
 
         self.source_var.set(
@@ -582,6 +618,10 @@ class MainWindow(tk.Tk):
             self.logger.start()
 
             self.logger.write(
+                f"Arquivo de log: {self.logger.get_log_file()}"
+            )
+
+            self.logger.write(
                 f"Origem: {source}"
             )
 
@@ -724,62 +764,27 @@ class MainWindow(tk.Tk):
         )
 
     def process_robocopy_line(self, line):
-
         line = line.strip()
 
         if not line:
             return
 
-        # -------------------------------------------------
-        # Resumo do ROBOCOPY
-        # -------------------------------------------------
+        # ---------------------------------------------------------
+        # Identifica arquivos efetivamente copiados
+        # ---------------------------------------------------------
 
-        if line.startswith("Files"):
-
-            parts = line.split()
-
-            try:
-                self.copied_files = int(parts[2])
-
-            except (IndexError, ValueError):
-                pass
-
-            # Não exibe o resumo técnico na tela
-            return
-
-        # -------------------------------------------------
-        # Outras linhas do resumo
-        # -------------------------------------------------
-
-        if (
-            line.startswith("Dirs")
-            or line.startswith("Bytes")
-            or line.startswith("Times")
-            or line.startswith("Ended")
-            or line.startswith("Diretórios")
-            or line.startswith("Arquivos")
-            or line.startswith("Bytes")
-            or line.startswith("N.º de Vezes")
-            or line.startswith("Finalizado em")
-            or line.startswith("Total")
-            or line.startswith("=")
-        ):
-            return
-
-        # -------------------------------------------------
-        # Linhas de arquivos
-        # -------------------------------------------------
-
-        looks_like_file = (
-            "." in line
-            and not line.startswith("ROBOCOPY")
-            and not line.startswith(
-                "-------------------------------------------------------------------------------"
-            )
+        copied_statuses = (
+            "Novo Arquivo",
+            "New File",
+            "Alterado",
+            "Changed",
+            "Mais Recente",
+            "Newer",
         )
 
-        if looks_like_file:
+        if any(line.startswith(status) for status in copied_statuses):
 
+            self.copied_files += 1
             self.processed_files += 1
 
             if self.total_files > 0:
@@ -805,23 +810,47 @@ class MainWindow(tk.Tk):
                     )
                 )
 
-            # Exibe na tela
             self.add_log(
                 line,
                 "success"
             )
 
-            # Grava no arquivo
             self.logger.write(
                 f"Arquivo processado: {line}"
             )
 
-        else:
+            return
 
-            self.add_log(
-                line,
-                "info"
-            )
+        # ---------------------------------------------------------
+        # Ignora cabeçalhos e resumo do ROBOCOPY
+        # ---------------------------------------------------------
+
+        if (
+            line.startswith("Dirs")
+            or line.startswith("Files")
+            or line.startswith("Bytes")
+            or line.startswith("Times")
+            or line.startswith("Ended")
+            or line.startswith("Diretórios")
+            or line.startswith("Arquivos")
+            or line.startswith("N.º de Vezes")
+            or line.startswith("Finalizado em")
+            or line.startswith("Total")
+            or line.startswith("Velocidade")
+            or line.startswith("=")
+            or line.startswith("-")
+            or line.startswith("ROBOCOPY")
+        ):
+            return
+
+        # ---------------------------------------------------------
+        # Outras mensagens do ROBOCOPY
+        # ---------------------------------------------------------
+
+        self.add_log(
+            line,
+            "info"
+        )
 
     # =====================================================
     # FINALIZAÇÃO

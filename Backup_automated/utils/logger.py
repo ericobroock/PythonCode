@@ -6,6 +6,7 @@ Gerenciamento dos arquivos de log.
 
 from datetime import datetime
 from pathlib import Path
+import sys
 
 
 class Logger:
@@ -14,11 +15,31 @@ class Logger:
     def __init__(self, log_directory=None):
 
         if log_directory is None:
+
+            # Quando executado como .exe
+            if getattr(sys, "frozen", False):
+
+                base_directory = Path(
+                    sys.executable
+                ).resolve().parent
+
+            # Quando executado como .py
+            else:
+
+                base_directory = (
+                    Path(__file__)
+                    .resolve()
+                    .parent
+                    .parent
+                )
+
             log_directory = (
-                Path(__file__).resolve().parent.parent / "logs"
+                base_directory / "logs"
             )
 
-        self.log_directory = Path(log_directory)
+        self.log_directory = Path(
+            log_directory
+        )
 
         self.log_directory.mkdir(
             parents=True,
@@ -34,9 +55,13 @@ class Logger:
             "%Y-%m-%d_%H-%M-%S.log"
         )
 
-        self.log_file = self.log_directory / filename
+        self.log_file = (
+            self.log_directory / filename
+        )
 
-        self.write("Backup iniciado.")
+        self.write(
+            "Backup iniciado."
+        )
 
     def write(self, message):
         """
@@ -70,21 +95,37 @@ class Logger:
                 encoding="utf-8"
             ) as file:
 
-                file.write(line + "\n")
+                file.write(
+                    line + "\n"
+                )
 
         except OSError:
             pass
 
     def _create_log_file(self):
-        """Cria o arquivo de log sem registrar mensagem."""
+        """Cria o arquivo de log."""
 
         filename = datetime.now().strftime(
             "%Y-%m-%d_%H-%M-%S.log"
         )
 
-        self.log_file = self.log_directory / filename
+        self.log_file = (
+            self.log_directory / filename
+        )
 
     def finish(self):
         """Registra o encerramento."""
 
-        self.write("Backup finalizado.")
+        self.write(
+            "Backup finalizado."
+        )
+
+    def get_log_directory(self):
+        """Retorna a pasta onde os logs são armazenados."""
+
+        return self.log_directory
+
+    def get_log_file(self):
+        """Retorna o arquivo de log atual."""
+
+        return self.log_file

@@ -98,7 +98,8 @@ class RobocopyRunner:
             text=True,
             encoding="cp850",
             errors="replace",
-            bufsize=1
+            bufsize=1,
+            creationflags=subprocess.CREATE_NO_WINDOW
         )
 
         for line in self.process.stdout:

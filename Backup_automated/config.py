@@ -5,10 +5,28 @@ Configurações gerais da aplicação.
 """
 
 from pathlib import Path
+import sys
 
 
-# Diretório onde o programa está sendo executado
-BASE_DIR = Path(__file__).resolve().parent
+def get_base_directory():
+    """
+    Retorna a pasta onde o programa está instalado/executando.
+
+    Quando executado como .py:
+        pasta do projeto.
+
+    Quando executado como .exe:
+        pasta onde está o executável.
+    """
+
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().parent
+
+    return Path(__file__).resolve().parent
+
+
+# Diretório base da aplicação
+BASE_DIR = get_base_directory()
 
 # Arquivo de configuração
 CONFIG_FILE = BASE_DIR / "backup_config.json"
@@ -21,6 +39,6 @@ DEFAULT_EXCLUDED_EXTENSIONS = [
     ".rvt",
 ]
 
-# Configurações padrão do ROBOCOPY
+# Configurações do ROBOCOPY
 ROBOCOPY_RETRIES = 2
 ROBOCOPY_WAIT_SECONDS = 2
